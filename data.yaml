@@ -1,5 +1,5 @@
 ---
-arcConfiugration:
+arcConfiguration:
   green:
     1: [9-11, 3-2, 8-7]
     2: [x-x, x-x, x-x]
