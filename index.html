@@ -27,11 +27,18 @@
       const DATAURL = "https://vstone.github.io/zerohour-configuration-thingie/data.json";
 
       var consoleSorter = function(a, b, aRow, bRow, column, dir, sorterParams) {
-        var aVals = a.split('-');
-        var bVals = b.split('-');
-        if (aVals == "x-x") {
+        if (aVals == "x" && bVals == "x") {
+          return 0;
+        }
+        else if (aVals == "x") {
           return -1;
         }
+        else if (bVals == "x") {
+          return 1;
+        }
+
+        var aVals = a.split('-');
+        var bVals = b.split('-');
         else if (aVals[0] == bVals[0]) {
           return aVals[1] - bVals[1];
         }
