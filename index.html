@@ -29,7 +29,10 @@
       var consoleSorter = function(a, b, aRow, bRow, column, dir, sorterParams) {
         var aVals = a.split('-');
         var bVals = b.split('-');
-        if (aVals[0] == bVals[0]) {
+        if (aVals[0] == "x") {
+          return -1;
+        }
+        else if (aVals[0] == bVals[0]) {
           return aVals[1] - bVals[1];
         }
         else {
@@ -82,6 +85,7 @@
         initialSort: [
           { column: "checked", dir: "asc" },
           { column: "console1", dir: "asc"},
+          { column: "color", dir: "asc"},
         ],
         rowDblClick: function(e, row) {
           var checkCell = row.getCell("checked");
@@ -99,7 +103,7 @@
           Object.keys(data).forEach(function(color) {
             Object.keys(data[color]).forEach(function(colorId) {
               output.push({
-                id: i,
+                //id: i,
                 checked: false,
                 color: color,
                 colorId: colorId,
