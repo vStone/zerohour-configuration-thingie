@@ -1,4 +1,62 @@
 ---
+arcConfiugration:
+  blue:
+    1: [x-x, x-x, x-x]
+    2: [x-x, x-x, x-x]
+    3: [x-x, x-x, x-x]
+    4: [x-x, x-x, x-x]
+    5: [x-x, x-x, x-x]
+    6: [x-x, x-x, x-x]
+    7: [x-x, x-x, x-x]
+  cyan:
+    1: [x-x, x-x, x-x]
+    2: [x-x, x-x, x-x]
+    3: [x-x, x-x, x-x]
+    4: [x-x, x-x, x-x]
+    5: [x-x, x-x, x-x]
+    6: [x-x, x-x, x-x]
+    7: [x-x, x-x, x-x]
+  green:
+    1: [x-x, x-x, x-x]
+    2: [x-x, x-x, x-x]
+    3: [x-x, x-x, x-x]
+    4: [x-x, x-x, x-x]
+    5: [x-x, x-x, x-x]
+    6: [x-x, x-x, x-x]
+    7: [x-x, x-x, x-x]
+  purple:
+    1: [x-x, x-x, x-x]
+    2: [x-x, x-x, x-x]
+    3: [x-x, x-x, x-x]
+    4: [x-x, x-x, x-x]
+    5: [x-x, x-x, x-x]
+    6: [x-x, x-x, x-x]
+    7: [x-x, x-x, x-x]
+  red:
+    1: [x-x, x-x, x-x]
+    2: [x-x, x-x, x-x]
+    3: [x-x, x-x, x-x]
+    4: [x-x, x-x, x-x]
+    5: [x-x, x-x, x-x]
+    6: [x-x, x-x, x-x]
+    7: [x-x, x-x, x-x]
+  white:
+    1: [x-x, x-x, x-x]
+    2: [x-x, x-x, x-x]
+    3: [x-x, x-x, x-x]
+    4: [x-x, x-x, x-x]
+    5: [x-x, x-x, x-x]
+    6: [x-x, x-x, x-x]
+    7: [x-x, x-x, x-x]
+  yellow:
+    1: [x-x, x-x, x-x]
+    2: [x-x, x-x, x-x]
+    3: [x-x, x-x, x-x]
+    4: [x-x, x-x, x-x]
+    5: [x-x, x-x, x-x]
+    6: [x-x, x-x, x-x]
+    7: [x-x, x-x, x-x]
+
 voidConfiguration:
   blue:
     1: [12-5, 12-11, 4-4]
