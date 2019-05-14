@@ -83,8 +83,7 @@
           }
         ],
         initialSort: [
-          { column: "checked", dir: "asc" },
-          { column: "console1", dir: "asc"},
+          { column: "console1", dir: "asc", },
           { column: "color", dir: "asc" }
         ],
         rowDblClick: function(e, row) {
@@ -99,11 +98,9 @@
         ajaxResponse:function(url, params, response) {
           var data = response[CONFIGURATION];
           var output = [];
-          var i = 1;
           Object.keys(data).forEach(function(color) {
             Object.keys(data[color]).forEach(function(colorId) {
               output.push({
-                //id: i,
                 checked: false,
                 color: color,
                 colorId: colorId,
@@ -112,7 +109,6 @@
                 console2: data[color][colorId][1],
                 console3: data[color][colorId][2]
               });
-              i++;
             });
           });
           return output;
