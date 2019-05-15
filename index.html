@@ -10,15 +10,30 @@
         text-align: center;
         font-weight: bold;
       }
+
+      .tabulator-cell[tabulator-field="colorTerm"] {
+        padding:0px;
+      }
+
       .tabulator-cell[tabulator-field="colorTerm"] .left-color{
         display:inline-block;
         text-align:left;
+        vertical-align: top;
         width:4em;
+        padding:2px;
       }
       .tabulator-cell[tabulator-field="colorTerm"] .right-number{
         display:inline-block;
         text-align:right;
+        vertical-align: top;
         width:1em;
+        padding:2px;
+      }
+      .tabulator-cell[tabulator-field="colorTerm"] img{
+        margin-left:2em;
+        height:28px;
+        width:28px;
+        padding:1px;
       }
     </style>
   </head>
@@ -71,11 +86,12 @@
         let pair = cell.getValue().split(" - ");
         let color = pair[0];
         let number = pair[1];
+        let image_html = "<img src='images/" + number + ".png'/>";
         let color_html = "<div class='left-color'>"+color+"</div>";
         let number_html = "<div class='right-number'>"+number+"</div>";
         cell.getElement().style.backgroundColor = colorMap[color];
         // return cell.getValue();
-        return color_html + number_html;
+        return color_html + number_html + image_html;
       };
 
       var table = new Tabulator("#zero-table", {
