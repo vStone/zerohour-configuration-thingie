@@ -10,6 +10,16 @@
         text-align: center;
         font-weight: bold;
       }
+      .tabulator-cell[tabulator-field="colorTerm"] .left-color{
+        display:inline-block;
+        text-align:left;
+        width:4em;
+      }
+      .tabulator-cell[tabulator-field="colorTerm"] .right-number{
+        display:inline-block;
+        text-align:right;
+        width:1em;
+      }
     </style>
   </head>
   <body>
@@ -57,6 +67,17 @@
         green: "#82ff84",
       }
 
+      var colorCellFormatter = function(cell, formatterParams, onRendered) {
+        let pair = cell.getValue().split(" - ");
+        let color = pair[0];
+        let number = pair[1];
+        let color_html = "<div class='left-color'>"+color+"</div>";
+        let number_html = "<div class='right-number'>"+number+"</div>";
+        cell.getElement().style.backgroundColor = colorMap[color];
+        // return cell.getValue();
+        return color_html + number_html;
+      };
+
       var table = new Tabulator("#zero-table", {
         movableColumns: true,
         selectable: 1,
@@ -75,12 +96,7 @@
           { title: "Console 1", field: "console1", sorter: consoleSorter, },
           { title: "Console 2", field: "console2", sorter: consoleSorter, },
           { title: "Console 3", field: "console3", sorter: consoleSorter, },
-          { title: "ColorTerm", field: "colorTerm",
-            formatter:function(cell, formatterParams, onRendered) {
-              cell.getElement().style.backgroundColor = colorMap[cell.getValue().split(" - ")[0]];
-              return cell.getValue();
-            }
-          },
+          { title: "ColorTerm", field: "colorTerm", formatter:colorCellFormatter},
           {
             title: "Checked", field: "checked",
             formatter: "tickCross", formatterParams: {
