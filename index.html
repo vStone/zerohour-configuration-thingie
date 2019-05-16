@@ -104,7 +104,7 @@
         }],
         groupHeader: [
           function(value, count, data) {
-            if (!value) { return "ToDo"; }
+            if (!value) { return "ToDo (" + count + "/49)"; }
             else { return "Done"; }
           }
         ],
@@ -122,6 +122,7 @@
           }
         ],
         initialSort: [
+          { column: "checked", dir: "asc", },
           { column: "console1", dir: "asc", },
         ],
         rowDblClick: function(e, row) {
