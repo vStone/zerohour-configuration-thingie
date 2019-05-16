@@ -35,15 +35,67 @@
         width:28px;
         padding:1px;
       }
+      #infofield {
+        border: 1px solid #000;
+        border-radius: 20px;
+        padding: 10px 40px 10px 10px;
+        margin-right: 75px;
+        margin-bottom: 20px;
+        background-color: #a4d4f9;
+      }
+      h4 {
+        margin-top: 0px;
+      }
+      #close-infofield:hover {
+        cursor: pointer;
+      }
+      #close-infofield {
+        z-index: 100;
+        position: relative;
+        float: right;
+        position: relative;
+        top: -30px;
+        right: -20px;
+      }
+      .buttons button {
+        padding-right: 5px;
+        padding-left: 28px;
+        padding-bottom: 5px;
+        padding-top: 5px;
+        background-repeat: no-repeat;
+        background-size: 24px 24px;
+        background-position: 2px 2px;
+        height: 32px;
+      }
+      #history-undo {
+        background-image: url(images/undo.svg);
+      }
+      #refresh {
+        background-image: url(images/refresh.svg);
+      }
     </style>
+    <script type="text/javascript">
+      function closeInfo() {
+        document.getElementById('infofield').style.display = "none";
+      }
+    </script>
   </head>
   <body>
     <h2>Zero Hour Helper: ARC (week 14th may)</h2>
-    <p>Double click a row to check it. Checked records are moved to the bottom so you can deal with dupes more easily.<br/>
-    Refresh page to reset all.</p>
+    <div id="infofield"><h4>Features:</h4>
+      <div id="close-infofield" onclick="closeInfo();">&#x2718;</div>
+      <ul>
+        <li>Double click a row to check it. Checked records are grouped so you can deal with dupes more easily.</li>
+        <li>If you make a mistake (it happens), you can use the undo button.</li>
+        <li>Refresh page to reset all.</li>
+      </ul>
+      <div id="github-ribbon" style="z-index: 1; position: absolute; top: 0px; right: 0px;">
+        <a href="https://github.com/vStone/zerohour-configuration-thingie"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+      </div>
+    </div>
     <div class="buttons">
       <button id="history-undo" onclick='table.undo(); table.setGroupBy("checked");'>Undo</button>
-      <button id="reset" onclick='location.reload();'>Refresh</button>
+      <button id="refresh" onclick='location.reload();'>Refresh</button>
     </div>
     <div id="zero-table">
     </div>
@@ -114,7 +166,7 @@
           { title: "Console 3", field: "console3", sorter: consoleSorter, },
           { title: "ColorTerm", field: "colorTerm", formatter:colorCellFormatter},
           {
-            title: "Checked", field: "checked",
+            title: "Done", field: "checked",
             formatter: "tickCross", formatterParams: {
               allowEmpty: false
             },
@@ -122,7 +174,6 @@
           }
         ],
         initialSort: [
-          { column: "checked", dir: "asc", },
           { column: "console1", dir: "asc", },
         ],
         rowDblClick: function(e, row) {
@@ -155,8 +206,5 @@
       });
     //undo button
     </script>
-    <div id="github-ribbon" style="position: absolute; top: 0px; right: 0px;">
-   <a href="https://github.com/vStone/zerohour-configuration-thingie"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
-    </div>
   </body>
 </html>
