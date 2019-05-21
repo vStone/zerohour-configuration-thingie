@@ -75,13 +75,73 @@
       }
     </style>
     <script type="text/javascript">
+      // close info box.
       function closeInfo() {
         document.getElementById('infofield').style.display = "none";
       }
+
+      // Print leading zeros for date stuffs (days, months)
+      function padDate(x) {
+        if (x < 10) {
+          return "0" + x;
+        }
+        else {
+          return "" + x;
+        }
+      }
+
+      // Calculate the current reset week. Its complicated.
+      function getResetWeek(forDay = new Date()) {
+        //console.log("Investigate: " + forDay);
+        let weekDay = forDay.getDay();
+
+        //console.log(" + Week day: " + weekDay);
+        let resetDay = new Date();
+        resetDay.setDate(forDay.getDate());
+
+        if (weekDay === 2) {
+          //console.log(" + Its Tuesday. Pay attention!");
+          let goBack = 0;
+          if (forDay.getUTCHours() < 17) {
+            goBack = 7;
+          }
+          resetDay.setDate(resetDay.getDate() - goBack);
+        }
+        else if (weekDay === 0) {
+          //console.log(" + Sunday is a bitch")
+          let goBack = 5;
+          resetDay.setDate(resetDay.getDate() - goBack);
+        }
+        else if (weekDay > 2 && weekDay !== 0) {
+          //console.log(" + After Tuesday. Go back in time");
+          let goBack = weekDay - 2;
+          resetDay.setDate(resetDay.getDate() - goBack);
+        }
+        else {
+          //console.log(" + Before Tuesday. Skip a week back");
+          resetDay.setDate(resetDay.getDate() - (7 - weekDay));
+        }
+        return resetDay.getFullYear() + "-" + padDate(resetDay.getMonth() + 1) + "-" + padDate(resetDay.getUTCDate());
+      }
+
+      // Get the week to display. Either manually provided in the url or the determine the current reset week.
+      function getWeek() {
+        let week = null;
+        let urlString = window.location.href;
+        let url = new URL(urlString);
+        if (url.searchParams.has("week")) {
+          week = url.searchParams.get("week");
+        }
+        else {
+          week = getResetWeek();
+        }
+        return week;
+      }
+
     </script>
   </head>
   <body>
-    <h2>Zero Hour Helper: ARC (week 14th may)</h2>
+    <h2>Zero Hour Helper: <span id="selected-week"></span></h2>
     <div id="infofield"><h4>Features:</h4>
       <div id="close-infofield" onclick="closeInfo();">&#x2718;</div>
       <ul>
@@ -89,7 +149,7 @@
         <li>If you make a mistake (it happens), you can use the undo button.</li>
         <li>Refresh page to reset all.</li>
       </ul>
-      <div id="github-ribbon" style="z-index: 1; position: absolute; top: 0px; right: 0px;">
+      <div id="github-ribbon" style="z-index: 1; position: absolute; top: 0; right: 0;">
         <a href="https://github.com/vStone/zerohour-configuration-thingie"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
       </div>
     </div>
@@ -100,10 +160,39 @@
     <div id="zero-table">
     </div>
     <script type="text/javascript">
-      const CONFIGURATION = "arcConfiguration";
-      const DATAURL = "data.json";
 
-      var consoleSorter = function(a, b, aRow, bRow, column, dir, sorterParams) {
+      const TABLE_DATAURL = "data/week" + getWeek() + ".json";
+      const WEEKS_URL = "weeks.json";
+      // print colors, dont use exact values since its unreadable.
+      const COLORMAP = {
+        cyan: "#bcf8ff",
+        blue: "#82adff",
+        purple: "#b293ff",
+        red: "#ff8282",
+        yellow: "#f8ff82",
+        white: "#fff",
+        green: "#82ff84",
+      };
+
+      // get available weeks information.
+      let weekRequest = new XMLHttpRequest();
+      weekRequest.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          let weekData = JSON.parse(this.responseText);
+          let singe = "Unknown";
+          if (weekData["week" + getWeek()]) {
+            singe = weekData["week" + getWeek()];
+          }
+          //fillDropDown();
+          document.getElementById("selected-week").innerText = singe + " (week: " + getWeek() + ")";
+        }
+      };
+      weekRequest.open("GET", WEEKS_URL, true);
+      weekRequest.send();
+
+      // Sort unknown values (x) or number pairs (#-#)
+      // Unknowns are on top so it can be used to find missing ones.
+      let consoleSorter = function(a, b, aRow, bRow, column, dir, sorterParams) {
         if (a == "x" && b == "x") {
           return 0;
         }
@@ -114,39 +203,30 @@
           return 1;
         }
 
-        var aVals = a.split('-');
-        var bVals = b.split('-');
+        let aVals = a.split('-');
+        let bVals = b.split('-');
         if (aVals[0] == bVals[0]) {
           return aVals[1] - bVals[1];
         }
         else {
           return aVals[0] - bVals[0];
         }
-      }
+      };
 
-      var colorMap = {
-        cyan: "#bcf8ff",
-        blue: "#82adff",
-        purple: "#b293ff",
-        red: "#ff8282",
-        yellow: "#f8ff82",
-        white: "#fff",
-        green: "#82ff84",
-      }
-
-      var colorCellFormatter = function(cell, formatterParams, onRendered) {
+      // color cell formatter using the COLORMAP
+      let colorCellFormatter = function(cell, formatterParams, onRendered) {
         let pair = cell.getValue().split(" - ");
         let color = pair[0];
         let number = pair[1];
         let image_html = "<img src='images/" + number + ".png'/>";
         let color_html = "<div class='left-color'>"+color+"</div>";
         let number_html = "<div class='right-number'>"+number+"</div>";
-        cell.getElement().style.backgroundColor = colorMap[color];
+        cell.getElement().style.backgroundColor = COLORMAP[color];
         // return cell.getValue();
         return color_html + number_html + image_html;
       };
 
-      var table = new Tabulator("#zero-table", {
+      let table = new Tabulator("#zero-table", {
         movableColumns: true,
         selectable: 1,
         history: true,
@@ -177,17 +257,16 @@
           { column: "console1", dir: "asc", },
         ],
         rowDblClick: function(e, row) {
-          var checkCell = row.getCell("checked");
-          var cellData = checkCell.getData();
+          let checkCell = row.getCell("checked");
           checkCell.setValue(!checkCell.getValue());
         },
         dataEdited: function(data) {
           table.setGroupBy("checked");
         },
-        ajaxURL: DATAURL,
+        ajaxURL: TABLE_DATAURL,
         ajaxResponse:function(url, params, response) {
-          var data = response[CONFIGURATION];
-          var output = [];
+          let data = response['data'];
+          let output = [];
           Object.keys(data).forEach(function(color) {
             Object.keys(data[color]).forEach(function(colorId) {
               output.push({
@@ -204,7 +283,6 @@
           return output;
         },
       });
-    //undo button
     </script>
   </body>
 </html>
