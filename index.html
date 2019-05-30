@@ -116,12 +116,13 @@
           //console.log(" + After Tuesday. Go back in time");
           let goBack = weekDay - 2;
           resetDay.setDate(resetDay.getDate() - goBack);
+          //console.log("Went back: " + resetDay);
         }
         else {
           //console.log(" + Before Tuesday. Skip a week back");
           resetDay.setDate(resetDay.getDate() - (7 - weekDay));
         }
-        return resetDay.getFullYear() + "-" + padDate(resetDay.getMonth() + 1) + "-" + padDate(resetDay.getUTCDate());
+        return resetDay.getFullYear() + "-" + padDate(resetDay.getMonth() + 1) + "-" + padDate(resetDay.getDate());
       }
 
       // Get the week to display. Either manually provided in the url or the determine the current reset week.
@@ -160,7 +161,6 @@
     <div id="zero-table">
     </div>
     <script type="text/javascript">
-
       const TABLE_DATAURL = "data/week" + getWeek() + ".json";
       const WEEKS_URL = "weeks.json";
       // print colors, dont use exact values since its unreadable.
