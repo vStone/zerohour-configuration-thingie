@@ -122,21 +122,39 @@
           //console.log(" + Before Tuesday. Skip a week back");
           resetDay.setDate(resetDay.getDate() - (7 - weekDay));
         }
-        return resetDay.getFullYear() + "-" + padDate(resetDay.getMonth() + 1) + "-" + padDate(resetDay.getDate());
+        resetDay.setUTCHours(17);
+        resetDay.setMinutes(0);
+        return resetDay;
       }
 
-      // Get the week to display. Either manually provided in the url or the determine the current reset week.
-      function getWeek() {
-        let week = null;
+      const ROTATIONS = {
+        start: new Date("2019-05-07"),
+        order: {
+          1: 'void',
+          2: 'arc',
+          3: 'solar',
+        }
+      };
+
+      function getSingeWeek() {
+        let startDay = ROTATIONS['start'];
+        let resetWeek = getResetWeek();
+        let weekdiff = Math.round(resetWeek - startDay);
+        let week = (Math.round(weekdiff / 1000 / 60 / 60 / 24 / 7) % 3 + 1);
+        return ROTATIONS['order'][week];
+      }
+
+      function getSinge() {
+        let singe = null;
         let urlString = window.location.href;
         let url = new URL(urlString);
-        if (url.searchParams.has("week")) {
-          week = url.searchParams.get("week");
+        if (url.searchParams.has("singe")) {
+          singe = url.searchParams.get("singe");
         }
         else {
-          week = getResetWeek();
+          singe = getSingeWeek();
         }
-        return week;
+        return singe;
       }
 
     </script>
@@ -161,8 +179,10 @@
     <div id="zero-table">
     </div>
     <script type="text/javascript">
-      const TABLE_DATAURL = "data/week" + getWeek() + ".json";
-      const WEEKS_URL = "weeks.json";
+
+      let singe = getSinge();
+      const TABLE_DATAURL = "data/" + singe + ".json";
+      document.getElementById('selected-week').innerText = singe;
       // print colors, dont use exact values since its unreadable.
       const COLORMAP = {
         cyan: "#bcf8ff",
@@ -174,21 +194,6 @@
         green: "#82ff84",
       };
 
-      // get available weeks information.
-      let weekRequest = new XMLHttpRequest();
-      weekRequest.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          let weekData = JSON.parse(this.responseText);
-          let singe = "Unknown";
-          if (weekData["week" + getWeek()]) {
-            singe = weekData["week" + getWeek()];
-          }
-          //fillDropDown();
-          document.getElementById("selected-week").innerText = singe + " (week: " + getWeek() + ")";
-        }
-      };
-      weekRequest.open("GET", WEEKS_URL, true);
-      weekRequest.send();
 
       // Sort unknown values (x) or number pairs (#-#)
       // Unknowns are on top so it can be used to find missing ones.
@@ -265,7 +270,7 @@
         },
         ajaxURL: TABLE_DATAURL,
         ajaxResponse:function(url, params, response) {
-          let data = response['data'];
+          let data = response;
           let output = [];
           Object.keys(data).forEach(function(color) {
             Object.keys(data[color]).forEach(function(colorId) {
