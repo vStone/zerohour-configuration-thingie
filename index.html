@@ -287,6 +287,21 @@
         return color_html + number_html + image_html;
       };
 
+      let consoleCellFormatter = function(cell, formatterParams, onRendered) {
+        let otherCell;
+        let otherData;
+        let otherRow;
+        cell.getElement().style.backgroundColor = 'inherit';
+        for (otherCell of cell.getColumn().getCells()) {
+          otherData = otherCell.getData();
+          if (otherData['checked'] == false && otherCell.getValue() == cell.getValue()) {
+            otherCell.getElement().style.backgroundColor = '#ffb685';
+            cell.getElement().style.backgroundColor = '#ffb685';
+          }
+        }
+        return cell.getValue();
+      }
+
       let table = new Tabulator("#zero-table", {
         movableColumns: true,
         selectable: 1,
@@ -302,16 +317,17 @@
           }
         ],
         columns: [
-          { title: "Console 1", field: "console1", sorter: consoleSorter, },
-          { title: "Console 2", field: "console2", sorter: consoleSorter, },
-          { title: "Console 3", field: "console3", sorter: consoleSorter, },
+          { title: "Console 1", field: "console1", sorter: consoleSorter, formatter:consoleCellFormatter, },
+          { title: "Console 2", field: "console2", sorter: consoleSorter, formatter:consoleCellFormatter, },
+          { title: "Console 3", field: "console3", sorter: consoleSorter, formatter:consoleCellFormatter, },
           { title: "ColorTerm", field: "colorTerm", formatter:colorCellFormatter},
           {
             title: "Done", field: "checked",
             formatter: "tickCross", formatterParams: {
-              allowEmpty: false
+              allowEmpty: false,
             },
-            editor: "tickCross", editorParams: {tristate:false, },
+            responsive: 1,
+            cellClick:function(e, cell){ cell.setValue(!cell.getValue()); }
           }
         ],
         initialSort: [
